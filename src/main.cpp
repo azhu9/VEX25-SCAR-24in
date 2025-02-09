@@ -12,7 +12,7 @@ ez::Drive chassis(
     {2, -3, 4, -5, -6},      // Left Chassis Ports (negative port will reverse it!)
     {11, -12, 13, -14, 15},  // Right Chassis Ports (negative port will reverse it!)
 
-    13,    // IMU Port
+    8,    // IMU Port
     2.75,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     600);  // Wheel RPM
 
@@ -42,8 +42,8 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      Auton("Example Drive\n\nDrive forward and come back.", drive_example),
-      Auton("Example Turn\n\nTurn 3 times.", turn_example),
+      // Auton("Example Drive\n\nDrive forward and come back.", drive_example),
+      // Auton("Example Turn\n\nTurn 3 times.", turn_example),
       Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
       Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
       Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
@@ -57,6 +57,9 @@ void initialize() {
   ez::as::initialize();
   master.rumble(".");
   lb_rotation.reset();
+
+  ez::Piston flipper('G');
+  flipper.set(true);
 }
 
 /**
@@ -65,7 +68,12 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-  // . . .
+  // ez::Piston flipper('G', true);
+  // ez::Piston leftDoinker('H', false);
+  // ez::Piston rightDoinker('D', false);
+  // flipper.set(true);
+  // leftDoinker.set(false);
+  // rightDoinker.set(false);
 }
 
 /**
@@ -115,16 +123,15 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-  pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_HOLD;
+  pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_BRAKE;
 
   chassis.drive_brake_set(driver_preference_brake);
 
   ez::Piston clamp('A', false);
   ez::Piston flipper('G', false);
   // ez::Piston rush('C', false);
-  ez::Piston leftDoinker('D', false);
-  ez::Piston rightDoinker('H', false);
-  pros::MotorGroup ladyBrown({17, -10});
+  ez::Piston leftDoinker('H', false);
+  ez::Piston rightDoinker('D', false);
 
   intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -133,6 +140,8 @@ void opcontrol() {
   bool flipperDeployed = false;
   bool leftDoinkerDeployed = false;
   bool rightDoinkerDeployed = false;
+  ez::PID lbPID{0.2, 0.001, 0.02, 0.0, "ladyBrown"};
+  lb_rotation.set_position(0);
 
   while (true) {
     // chassis.opcontrol_tank();  // Tank control
@@ -143,10 +152,13 @@ void opcontrol() {
 
     if (master.get_digital(DIGITAL_R1)) {
       intake.move(127);
+      conveyor.move(127);
     } else if (master.get_digital(DIGITAL_R2)) {
       intake.move(-127);
+      conveyor.move(-127);
     } else {
       intake.brake();
+      conveyor.brake();
     }
 
     if (master.get_digital_new_press(DIGITAL_B)) {
@@ -186,14 +198,40 @@ void opcontrol() {
       rightDoinker.set(false);
     }
 
-    if (master.get_digital_new_press(DIGITAL_DOWN)) {
-      flipperDeployed = !flipperDeployed;
-      flipper.set(flipperDeployed);
+    if (master.get_digital(DIGITAL_DOWN)) {
+      flipperDeployed = true;
+      // leftDoinkerDeployed = !leftDoinkerDeployed;
+      // leftDoinker.set(leftDoinkerDeployed);
+    }
+    else{
+      flipperDeployed = false;
+    }
+
+    if(flipperDeployed){
+      flipper.set(true);
+    }
+    else{
+      flipper.set(false);
+    }
+
+    if (master.get_digital_new_press(DIGITAL_X)) {
+      // ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
+      lb_rotation.reset_position();
+      int target_position = 20;
+      int slow_speed = 127;
+
+      while (abs(lb_rotation.get_position()) < target_position) {
+        ladyBrown.move(slow_speed);
+        pros::delay(20);
+      }
+
+      ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      // ladyBrown.brake();
     }
 
 
-
-    ez::PID lbPID{0.45, 0, 0, 0, "ladyBrown"};
+    // ez::PID lbPID{0.45, 0, 0, 0, "ladyBrown"};
 
 
     if (master.get_digital(DIGITAL_L1)) {
