@@ -134,14 +134,18 @@ void opcontrol() {
   ez::Piston rightDoinker('D', false);
 
   intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   bool clampDeployed = false;
   bool flipperDeployed = false;
   bool leftDoinkerDeployed = false;
   bool rightDoinkerDeployed = false;
+
+  int position = lb_rotation.get_position();
+
   ez::PID lbPID{0.2, 0.001, 0.02, 0.0, "ladyBrown"};
   lb_rotation.set_position(0);
+
 
   while (true) {
     // chassis.opcontrol_tank();  // Tank control
@@ -214,19 +218,26 @@ void opcontrol() {
       flipper.set(false);
     }
 
-    if (master.get_digital_new_press(DIGITAL_X)) {
-      // ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
-      lb_rotation.reset_position();
-      int target_position = 20;
+    position = lb_rotation.get_position();
+    pros::lcd::print(1, "Rotation: %i", position);
+
+
+    if (master.get_digital_new_press(DIGITAL_X)) {
+
+      // lb_rotation.reset_position();
+      int target_position = 2400;
       int slow_speed = 127;
 
-      while (abs(lb_rotation.get_position()) < target_position) {
-        ladyBrown.move(slow_speed);
+      while (abs(position) < target_position) {
+        position = lb_rotation.get_position();
+        ladyBrown.move(40);
         pros::delay(20);
       }
 
       ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      master.rumble(".");
+
       // ladyBrown.brake();
     }
 
@@ -238,6 +249,8 @@ void opcontrol() {
       ladyBrown.move(127);
     } else if (master.get_digital(DIGITAL_L2)) {
       ladyBrown.move(-127);
+      pros::delay(50);
+      lb_rotation.set_position(0);
     } else {
       ladyBrown.brake();
     }

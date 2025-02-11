@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "large-bot RED",
+    "project_name": "big",
     "target": "v5",
     "templates": {
       "EZ-Template": {
@@ -422,8 +422,8 @@
     },
     "upload_options": {
       "description": "making code ez",
-      "icon": "X",
-      "slot": 4
+      "icon": "pros",
+      "slot": 1
     },
     "use_early_access": false
   }
