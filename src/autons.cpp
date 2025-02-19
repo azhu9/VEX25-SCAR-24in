@@ -1,4 +1,7 @@
+#include "helpers.hpp";
 #include "main.h"
+#include "subsystems.hpp"
+
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -6,9 +9,6 @@
 /////
 
 // These are out of 127
-const int DRIVE_SPEED = 110;
-const int TURN_SPEED = 90;
-const int SWING_SPEED = 90;
 
 ///
 // Constants
@@ -48,10 +48,9 @@ void drive_example() {
 
   rightDoinker.set(false);
 
-
   chassis.pid_drive_set(-15_in, 127, true);
   chassis.pid_wait();
- 
+
   rightDoinker.set(true);
 
   chassis.pid_drive_set(-5_in, 100, true);
@@ -60,7 +59,6 @@ void drive_example() {
   rightDoinker.set(false);
 
   pros::delay(300);
-  
 
   chassis.pid_turn_relative_set(-172_deg, TURN_SPEED);
   chassis.pid_wait();
@@ -79,7 +77,6 @@ void drive_example() {
 
   conveyor.move(127);
 
-
   chassis.pid_turn_relative_set(20_deg, TURN_SPEED);
   chassis.pid_wait();
 
@@ -93,7 +90,6 @@ void drive_example() {
 
   intake.brake();
   // conveyor.brake();
-
 
   chassis.pid_swing_relative_set(ez::LEFT_SWING, 85_deg, 70, 0);
   chassis.pid_wait();
@@ -127,7 +123,7 @@ void drive_example() {
 
   chassis.pid_turn_relative_set(-125_deg, TURN_SPEED);
   chassis.pid_wait();
-  
+
   chassis.pid_drive_set(20_in, 70, true);
   chassis.pid_wait();
 
@@ -144,12 +140,11 @@ void drive_example() {
 
   chassis.pid_turn_relative_set(-165_deg, TURN_SPEED);
   chassis.pid_wait();
-  
+
   chassis.pid_drive_set(-15_in, 50, true);
   chassis.pid_wait();
 
   clamp.set(true);
-
 
   intake.move(127);
   conveyor.move(127);
@@ -190,10 +185,9 @@ void turn_example() {
 
   leftDoinker.set(false);
 
-
   chassis.pid_drive_set(-15_in, 127, true);
   chassis.pid_wait();
- 
+
   leftDoinker.set(true);
 
   chassis.pid_drive_set(-5_in, 100, true);
@@ -202,7 +196,6 @@ void turn_example() {
   leftDoinker.set(false);
 
   pros::delay(300);
-  
 
   chassis.pid_turn_relative_set(172_deg, TURN_SPEED);
   chassis.pid_wait();
@@ -225,7 +218,6 @@ void turn_example() {
 
   conveyor.brake();
 
-
   chassis.pid_turn_relative_set(-20_deg, TURN_SPEED);
   chassis.pid_wait();
 
@@ -239,7 +231,6 @@ void turn_example() {
 
   intake.brake();
   // conveyor.brake();
-
 
   chassis.pid_swing_relative_set(ez::RIGHT_SWING, -85_deg, 70, 0);
   chassis.pid_wait();
@@ -273,7 +264,7 @@ void turn_example() {
 
   chassis.pid_turn_relative_set(140_deg, TURN_SPEED);
   chassis.pid_wait();
-  
+
   chassis.pid_drive_set(20_in, 70, true);
   chassis.pid_wait();
 
@@ -290,12 +281,11 @@ void turn_example() {
 
   // chassis.pid_turn_relative_set(165_deg, TURN_SPEED);
   // chassis.pid_wait();
-  
+
   // chassis.pid_drive_set(-15_in, 50, true);
   // chassis.pid_wait();
 
   // clamp.set(true);
-
 
   // intake.move(127);
   // conveyor.move(127);
@@ -336,10 +326,9 @@ void drive_and_turn() {
 
   rightDoinker.set(false);
 
-
   chassis.pid_drive_set(-30_in, 127, true);
   chassis.pid_wait();
- 
+
   rightDoinker.set(true);
 
   chassis.pid_drive_set(-5_in, 100, true);
@@ -352,28 +341,65 @@ void drive_and_turn() {
 // Wait Until and Changing Max Speed
 ///
 void wait_until_change_speed() {
-  // pid_wait_until will wait until the robot gets to a desired position
+  comboStart(127);
+  chassis.pid_drive_set(12_in, 100, true);
+  pros::delay(500);
 
-  // When the robot gets to 6 inches slowly, the robot will travel the remaining distance at full speed
-  chassis.pid_drive_set(24_in, 30, true);
-  chassis.pid_wait_until(6_in);
-  chassis.pid_speed_max_set(DRIVE_SPEED);  // After driving 6 inches at 30 speed, the robot will go the remaining distance at DRIVE_SPEED
   chassis.pid_wait();
 
-  chassis.pid_turn_set(45_deg, TURN_SPEED);
+  comboStop();
+
+  chassis.pid_drive_set(-11_in, 100, true);
+  chassis.pid_wait();
+  comboStart(127, 2500);
+
+  chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, SWING_SPEED, 15);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(-45_deg, TURN_SPEED);
+  chassis.pid_drive_set(42_in, 80, true);
+  chassis.pid_wait_until(30_in);
+  intakeStart(127);
   chassis.pid_wait();
+
+  pros::delay(500);
+  chassis.pid_turn_set(180_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  pros::delay(500);
+
+  chassis.pid_drive_set(-22_in, 50, true);
+  chassis.pid_wait();
+  intakeStop();
+  clampIn();
 
   chassis.pid_turn_set(0_deg, TURN_SPEED);
   chassis.pid_wait();
+  pros::delay(200);
 
-  // When the robot gets to -6 inches slowly, the robot will travel the remaining distance at full speed
-  chassis.pid_drive_set(-24_in, 30, true);
-  chassis.pid_wait_until(-6_in);
-  chassis.pid_speed_max_set(DRIVE_SPEED);  // After driving 6 inches at 30 speed, the robot will go the remaining distance at DRIVE_SPEED
+  comboStart(127);
+  chassis.pid_drive_set(24_in, 50, true);
   chassis.pid_wait();
+
+  chassis.pid_turn_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  pros::delay(500);
+
+  chassis.pid_drive_set(36_in, 50, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 55);
+  chassis.pid_wait();
+  pros::delay(200);
+
+  chassis.pid_drive_set(20_in, 40, true);
+  chassis.pid_wait();
+
+
+  // chassis.pid_drive_set( 36_in, 80, true);
+  // chassis.pid_wait();
 }
 
 ///

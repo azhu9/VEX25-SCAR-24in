@@ -1,5 +1,7 @@
 #include "main.h"
+#include <string>
 #include "pros/motors.h"
+#include "subsystems.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -33,7 +35,7 @@ void initialize() {
   ez::as::auton_selector.autons_add({
       // Auton("Example Drive\n\nDrive forward and come back.", drive_example),
       // Auton("Example Turn\n\nTurn 3 times.", turn_example),
-      Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
+      // Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
       Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
       Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
       Auton("Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining),
@@ -47,8 +49,8 @@ void initialize() {
   master.rumble(".");
   lb_rotation.reset();
 
-  ez::Piston flipper('G');
-  flipper.set(true);
+  // ez::Piston flipper('G');
+  // flipper.set(true);
 }
 
 void disabled() {}
@@ -69,11 +71,6 @@ void opcontrol() {
 
   chassis.drive_brake_set(driver_preference_brake);
 
-  ez::Piston clamp('A', false);
-  ez::Piston flipper('G', false);
-  ez::Piston leftDoinker('H', false);
-  ez::Piston rightDoinker('D', false);
-
   intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
@@ -84,10 +81,10 @@ void opcontrol() {
 
   int position = lb_rotation.get_position();
 
-  ez::PID lbPID{0.2, 0.001, 0.02, 0.0, "ladyBrown"};
+  // ez::PID lbPID{0.2, 0.001, 0.02, 0.0, "ladyBrown"};
   lb_rotation.set_position(0);
   int lastPressTime = 0;
-  const int doublePressThreshold = 200;
+  const int doublePressThreshold = 175;
 
 
   while (true) {
@@ -105,81 +102,51 @@ void opcontrol() {
       conveyor.brake();
     }
 
-    // if (master.get_digital_new_press(DIGITAL_B)) {
-    //   clampDeployed = !clampDeployed;
-    //   clamp.set(clampDeployed);
+    clampPiston.button_toggle(master.get_digital(DIGITAL_B));
+
+    // if (master.get_digital(DIGITAL_Y) && !flipperDeployed) {
+    //   leftDoinkerDeployed = true;
+    // }else{
+    //   leftDoinkerDeployed = false;
     // }
-    clamp.button_toggle(master.get_digital(DIGITAL_B));
 
-    if (master.get_digital(DIGITAL_Y) && !flipperDeployed) {
-      leftDoinkerDeployed = true;
-    }else{
-      leftDoinkerDeployed = false;
-    }
+    // if(leftDoinkerDeployed){
+    //   leftDoinker.set(true);
+    // }else{
+    //   leftDoinker.set(false);
+    // }
 
-    if(leftDoinkerDeployed){
-      leftDoinker.set(true);
-    }else{
-      leftDoinker.set(false);
-    }
+    leftDoinker.set(master.get_digital(DIGITAL_Y) && !flipperDeployed);
 
-    if (master.get_digital(DIGITAL_RIGHT) && !flipperDeployed) {
-      rightDoinkerDeployed = true;
-    }else{
-      rightDoinkerDeployed = false;
-    }
+    rightDoinker.set(master.get_digital(DIGITAL_RIGHT) && !flipperDeployed);
 
-    if(rightDoinkerDeployed){
-      rightDoinker.set(true);
-    }else{
-      rightDoinker.set(false);
-    }
-
-    if (master.get_digital(DIGITAL_DOWN) && !rightDoinkerDeployed && !leftDoinkerDeployed) {
-      flipperDeployed = true;
-    }else{
-      flipperDeployed = false;
-    }
-
-    if(flipperDeployed){
-      flipper.set(true);
-    }else{
-      flipper.set(false);
-    }
+    flipperPiston.set(master.get_digital(DIGITAL_DOWN) && !rightDoinkerDeployed && !leftDoinkerDeployed);
 
 
     position = lb_rotation.get_position();
     pros::lcd::print(1, "Rotation: %i", position);
+    master.set_text(0, 0, "r : " +std::to_string(position));
 
-
-    // if (master.get_digital_new_press(DIGITAL_X)) {
-
-    //   // lb_rotation.reset_position();
-    //   int target_position = 2400;
-    //   int slow_speed = 127;
-
-    //   while (abs(position) < target_position) {
-    //     position = lb_rotation.get_position();
-    //     ladyBrown.move(40);
-    //     pros::delay(20);
-    //   }
-
-    //   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    //   master.rumble(".");
-
-    //   // ladyBrown.brake();
-    // }
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
       int currentTime = pros::millis();
 
       if (currentTime - lastPressTime <= doublePressThreshold) {
-        int target_position = 3000;
+        int target_position = 2300;
         int slow_speed = 127;
-  
-        while (abs(position) < target_position) {
-          position = lb_rotation.get_position();
-          ladyBrown.move(55);
-          pros::delay(20);
+        
+        if(abs(position) < target_position){
+          while (abs(position) < target_position) {
+            position = lb_rotation.get_position();
+            ladyBrown.move(55);
+            pros::delay(20);
+          }
+        }
+        else if(abs(position) > target_position){
+          while (abs(position) > target_position) {
+            position = lb_rotation.get_position();
+            ladyBrown.move(-20);
+            pros::delay(20);
+          }
         }
   
         ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);

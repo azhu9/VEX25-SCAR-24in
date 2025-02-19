@@ -1,7 +1,8 @@
 #pragma once
 
+#include "EZ-Template/piston.hpp"
 #include "api.h"
-#include "liblvgl/widgets/lv_btnmatrix.h"
+
 // Your motors, sensors, etc. should go here.  Below are examples
 
 // inline pros::Motor intake(1);
@@ -11,6 +12,11 @@
 inline pros::Motor intake(-16);
 inline pros::Motor conveyor(21);
 inline pros::Rotation lb_rotation(18);
-inline pros::MotorGroup ladyBrown({17, -7});
+inline pros::MotorGroup ladyBrown({19, -7});
 
 // inline pros::Optical color(10);
+
+inline ez::Piston clampPiston('A', false);
+inline ez::Piston flipperPiston('G', false);
+inline ez::Piston leftDoinker('H', false);
+inline ez::Piston rightDoinker('D', false);

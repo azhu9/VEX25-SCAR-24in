@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "big",
+    "project_name": "big skillings",
     "target": "v5",
     "templates": {
       "EZ-Template": {
@@ -423,7 +423,7 @@
     "upload_options": {
       "description": "making code ez",
       "icon": "pros",
-      "slot": 1
+      "slot": 2
     },
     "use_early_access": false
   }
