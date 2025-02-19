@@ -33,7 +33,7 @@ void default_constants() {
 ///
 // Drive Example
 ///
-void drive_example() {
+void blueMatch() {
   ez::Piston flipper('G');
 
   flipper.set(false);
@@ -170,7 +170,7 @@ void drive_example() {
 ///
 // Turn Example
 ///
-void turn_example() {
+void redMatch() {
   ez::Piston flipper('G');
 
   flipper.set(false);
@@ -311,7 +311,7 @@ void turn_example() {
 ///
 // Combining Turn + Drive
 ///
-void drive_and_turn() {
+void redMatchSafe() {
   ez::Piston flipper('G');
 
   flipper.set(false);
@@ -340,7 +340,7 @@ void drive_and_turn() {
 ///
 // Wait Until and Changing Max Speed
 ///
-void wait_until_change_speed() {
+void skills() {
   comboStart(127);
   chassis.pid_drive_set(12_in, 100, true);
   pros::delay(500);

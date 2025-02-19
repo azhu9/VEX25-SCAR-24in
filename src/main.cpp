@@ -33,14 +33,14 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      // Auton("Example Drive\n\nDrive forward and come back.", drive_example),
-      // Auton("Example Turn\n\nTurn 3 times.", turn_example),
-      // Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
-      Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
-      Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
-      Auton("Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining),
-      Auton("Combine all 3 movements", combining_movements),
-      Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
+      // Auton("BLUE Positive goal rush \n Use Alignemnt tool", blueMatch),
+      // Auton("RED Positive goal rush \n Use Alignemnt tool", redMatch),
+      // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", redMatchSafe),
+      Auton("SKILLS \n Align against wallstake", skills),
+      // Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
+      // Auton("Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining),
+      // Auton("Combine all 3 movements", combining_movements),
+      // Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
   });
 
   // Initialize chassis and auton selector
@@ -49,7 +49,7 @@ void initialize() {
   master.rumble(".");
   lb_rotation.reset();
 
-  // ez::Piston flipper('G');
+  // ez::Piston flipper('G');   //UNCOMMENT FOR DRIVER CODE
   // flipper.set(true);
 }
 
@@ -74,14 +74,10 @@ void opcontrol() {
   intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-  bool clampDeployed = false;
-  bool flipperDeployed = false;
-  bool leftDoinkerDeployed = false;
-  bool rightDoinkerDeployed = false;
+
 
   int position = lb_rotation.get_position();
 
-  // ez::PID lbPID{0.2, 0.001, 0.02, 0.0, "ladyBrown"};
   lb_rotation.set_position(0);
   int lastPressTime = 0;
   const int doublePressThreshold = 175;
@@ -104,23 +100,11 @@ void opcontrol() {
 
     clampPiston.button_toggle(master.get_digital(DIGITAL_B));
 
-    // if (master.get_digital(DIGITAL_Y) && !flipperDeployed) {
-    //   leftDoinkerDeployed = true;
-    // }else{
-    //   leftDoinkerDeployed = false;
-    // }
+    leftDoinker.set(master.get_digital(DIGITAL_Y) && !flipperPiston.get());
 
-    // if(leftDoinkerDeployed){
-    //   leftDoinker.set(true);
-    // }else{
-    //   leftDoinker.set(false);
-    // }
+    rightDoinker.set(master.get_digital(DIGITAL_RIGHT) && !flipperPiston.get());
 
-    leftDoinker.set(master.get_digital(DIGITAL_Y) && !flipperDeployed);
-
-    rightDoinker.set(master.get_digital(DIGITAL_RIGHT) && !flipperDeployed);
-
-    flipperPiston.set(master.get_digital(DIGITAL_DOWN) && !rightDoinkerDeployed && !leftDoinkerDeployed);
+    flipperPiston.set(master.get_digital(DIGITAL_DOWN) && !rightDoinker.get() && !leftDoinker.get());
 
 
     position = lb_rotation.get_position();
@@ -132,7 +116,6 @@ void opcontrol() {
 
       if (currentTime - lastPressTime <= doublePressThreshold) {
         int target_position = 2300;
-        int slow_speed = 127;
         
         if(abs(position) < target_position){
           while (abs(position) < target_position) {
@@ -165,6 +148,9 @@ void opcontrol() {
     } else {
       ladyBrown.brake();
     }
+
+
+
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

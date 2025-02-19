@@ -6,10 +6,10 @@ extern Drive chassis;
 
 inline bool red_side = false;
 
-void drive_example();
-void turn_example();
-void drive_and_turn();
-void wait_until_change_speed();
+void blueMatch();
+void redMatch();
+void redMatchSafe();
+void skills();
 void swing_example();
 void motion_chaining();
 void combining_movements();
