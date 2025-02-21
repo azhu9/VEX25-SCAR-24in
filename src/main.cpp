@@ -18,6 +18,28 @@ ez::Drive chassis(
     2.75,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     600);  // Wheel RPM
 
+const int numStates = 3;
+//make sure these are in centidegrees (1 degree = 100 centidegrees)
+int states[numStates] = {0, 600, 1000};
+int currState = 0;
+int target = 0;
+
+void nextState() {
+    currState += 1;
+    if (currState == numStates) {
+        currState = 0;
+    }
+    target = states[currState];
+}
+
+void liftControl() {
+    double kp = 1;
+    double error = target - abs(lb_rotation.get_position());
+    double velocity = kp * error;
+    lb1.move(velocity);
+    lb2.move(velocity);
+}
+
 void initialize() {
   // Print our branding over your terminal :D
   ez::ez_template_print();
@@ -51,7 +73,14 @@ void initialize() {
 
   // ez::Piston flipper('G');   //UNCOMMENT FOR DRIVER CODE
   // flipper.set(true);
+  pros::Task liftControlTask([]{
+    while (true) {
+        liftControl();
+        pros::delay(10);
+    }
+});
 }
+
 
 void disabled() {}
 
@@ -106,6 +135,9 @@ void opcontrol() {
 
     flipperPiston.set(master.get_digital(DIGITAL_DOWN) && !rightDoinker.get() && !leftDoinker.get());
 
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
+			nextState();
+		}
 
     position = lb_rotation.get_position();
     pros::lcd::print(1, "Rotation: %i", position);

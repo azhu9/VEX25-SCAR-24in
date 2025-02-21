@@ -14,6 +14,9 @@ inline pros::Motor conveyor(21);
 inline pros::Rotation lb_rotation(18);
 inline pros::MotorGroup ladyBrown({19, -7});
 
+inline pros::Motor lb1(19);
+inline pros::Motor lb2(-7);
+
 // inline pros::Optical color(10);
 
 inline ez::Piston clampPiston('A', false);
