@@ -14,5 +14,6 @@ void swing_example();
 void motion_chaining();
 void combining_movements();
 void interfered_example();
+void intakeTest();
 
 void default_constants();

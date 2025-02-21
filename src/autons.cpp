@@ -30,9 +30,31 @@ void default_constants() {
   chassis.slew_drive_constants_set(7_in, 80);
 }
 
+void unJamFunction(){
+  pros::delay(2000);
+  while(true){
+      int velocity = conveyor.get_actual_velocity();
+      if(pros::competition::is_autonomous() && isIntaking){
+          if(velocity < 5 && velocity > 0){
+              conveyor.move(-127);
+              pros::delay(300);
+              conveyor.move(127);
+          }
+      }
+      pros::delay(10);
+  }
+}
+pros::Task unjam(unJamFunction);
+
 ///
 // Drive Example
 ///
+
+// void intakeTest(){
+//   groupStart(127, 10000);
+
+// }
+
 void blueMatch() {
   ez::Piston flipper('G');
 
@@ -354,7 +376,7 @@ void skills() {
 
   chassis.pid_drive_set(-11.25_in, 60, true);
   chassis.pid_wait();
-  comboStart(127, 2500);
+  groupStart(127, 2500);
 
   //First TUrn
   chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, SWING_SPEED, 15);
@@ -382,7 +404,7 @@ void skills() {
   chassis.pid_wait();
   pros::delay(200);
 
-  comboStart(127);
+  groupStart(127);
   chassis.pid_drive_set(24_in, 50, true);
   chassis.pid_wait();
 
@@ -397,7 +419,7 @@ void skills() {
   chassis.pid_wait();
 
   // leftDoinkerOut();
-  comboStop();
+  groupStop();
   intakeStart(127);
   pros::delay(1000);
   
@@ -405,12 +427,12 @@ void skills() {
   chassis.pid_wait();
   pros::delay(200);
   intakeStop();
-  comboStart(127);
+  groupStart(127);
 
   chassis.pid_drive_set(15_in, 40, true);
   chassis.pid_wait();
 
-  comboStop();
+  groupStop();
 
   chassis.pid_turn_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();

@@ -7,19 +7,27 @@ const int DRIVE_SPEED = 110;
 const int TURN_SPEED = 90;
 const int SWING_SPEED = 90;
 
+inline bool isIntaking = false;
+
 
 //intake helper methods
 inline void intakeStart(int voltage){
     intake.move(voltage);
+    pros::delay(50);
+    isIntaking = true;
 }
 
 inline void intakeStart(int voltage, int ms){
     intake.move(voltage);
-    pros::delay(ms);
+    pros::delay(50);
+    isIntaking = true;
+    pros::delay(ms-50);
+    isIntaking = false;
     intake.brake();
 }
 
 inline void intakeStop(){
+    isIntaking = false;
     intake.brake();
 }
 
@@ -40,20 +48,26 @@ inline void conveyorStop(){
 }
 
 //both intake and conveyor methods
-inline void comboStart(int voltage){
+inline void groupStart(int voltage){
     intake.move(voltage);
+    pros::delay(50);
+    isIntaking = true;
     conveyor.move(voltage);
 }
 
-inline void comboStart(int voltage, int ms){
+inline void groupStart(int voltage, int ms){
     intake.move(voltage);
+    pros::delay(50);
+    isIntaking = true;
     conveyor.move(voltage);
-    pros::delay(ms);
+    pros::delay(ms-50);
+    isIntaking = false;
     intake.brake();
     conveyor.brake();
 }
 
-inline void comboStop(){
+inline void groupStop(){
+    isIntaking = false;
     intake.brake();
     conveyor.brake();
 }

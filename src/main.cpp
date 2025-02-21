@@ -52,6 +52,7 @@ void initialize() {
       // Auton("BLUE Positive goal rush \n Use Alignemnt tool", blueMatch),
       // Auton("RED Positive goal rush \n Use Alignemnt tool", redMatch),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", redMatchSafe),
+      // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", intakeTest),
       Auton("SKILLS \n Align against wallstake", skills),
       // Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
       // Auton("Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining),
