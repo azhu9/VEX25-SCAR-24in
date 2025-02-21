@@ -2,6 +2,7 @@
 #include <string>
 #include "pros/motors.h"
 #include "subsystems.hpp"
+#include "helpers.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -17,6 +18,21 @@ ez::Drive chassis(
     8,    // IMU Port
     2.75,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     600);  // Wheel RPM
+
+// void lbMove(int target, int timeout){
+//   int target_position = target;
+//   int pressTime = pros::millis();
+
+//   while (abs(position) < target_position) {
+//     int curTime = pros::millis();
+//     position = lb_rotation.get_position();
+//     ladyBrown.move(40); //55
+//     pros::delay(20);
+
+//     if(curTime - pressTime > timeout) break;
+//   }
+  
+// }
 
 void initialize() {
   // Print our branding over your terminal :D
@@ -76,8 +92,6 @@ void opcontrol() {
 
 
 
-  int position = lb_rotation.get_position();
-
   lb_rotation.set_position(0);
   int lastPressTime = 0;
   const int doublePressThreshold = 175;
@@ -108,6 +122,9 @@ void opcontrol() {
 
 
     position = lb_rotation.get_position();
+
+    if(position == INT_MAX || position == INT_MIN) master.set_text(0, 0, "LB ERROR");
+
     pros::lcd::print(1, "Rotation: %i", position);
     master.set_text(0, 0, "r : " +std::to_string(position));
 
@@ -115,22 +132,7 @@ void opcontrol() {
       int currentTime = pros::millis();
 
       if (currentTime - lastPressTime <= doublePressThreshold) {
-        int target_position = 2300;
-        
-        if(abs(position) < target_position){
-          while (abs(position) < target_position) {
-            position = lb_rotation.get_position();
-            ladyBrown.move(55);
-            pros::delay(20);
-          }
-        }
-        else if(abs(position) > target_position){
-          while (abs(position) > target_position) {
-            position = lb_rotation.get_position();
-            ladyBrown.move(-20);
-            pros::delay(20);
-          }
-        }
+        lbMove(3000, 1000); //function in helpers.hpp
   
         ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         master.rumble(".");

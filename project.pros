@@ -422,8 +422,8 @@
     },
     "upload_options": {
       "description": "making code ez",
-      "icon": "ufo",
-      "slot": 1
+      "icon": "X",
+      "slot": 2
     },
     "use_early_access": false
   }

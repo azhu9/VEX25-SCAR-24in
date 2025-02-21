@@ -91,3 +91,19 @@ inline void rightDoinkerIn(){
 inline void rightDoinkerOut(){
     rightDoinker.set(false);
 }
+
+
+inline void lbMove(int target, int timeout){
+    int target_position = target;
+    int pressTime = pros::millis();
+  
+    while (abs(position) < target_position) {
+      int curTime = pros::millis();
+      position = lb_rotation.get_position();
+      ladyBrown.move(40); //55
+      pros::delay(20);
+  
+      if(curTime - pressTime > timeout) break;
+    }
+    
+  }

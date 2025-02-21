@@ -1,4 +1,4 @@
-#include "helpers.hpp";
+#include "helpers.hpp"
 #include "main.h"
 #include "subsystems.hpp"
 
@@ -341,36 +341,41 @@ void redMatchSafe() {
 // Wait Until and Changing Max Speed
 ///
 void skills() {
+  // lbMove(3000, 1000);
+
+  // pros::delay(5000);
+
   comboStart(127);
-  chassis.pid_drive_set(12_in, 100, true);
+  chassis.pid_drive_set(12_in, 60, true);
   pros::delay(500);
 
   chassis.pid_wait();
 
   comboStop();
 
-  chassis.pid_drive_set(-11_in, 100, true);
+  chassis.pid_drive_set(-11.25_in, 60, true);
   chassis.pid_wait();
   comboStart(127, 2500);
 
   chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, SWING_SPEED, 15);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(42_in, 80, true);
+  chassis.pid_drive_set(42_in, 60, true);
   chassis.pid_wait_until(30_in);
   intakeStart(127);
   chassis.pid_wait();
 
-  pros::delay(500);
+  pros::delay(300);
   chassis.pid_turn_set(180_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  pros::delay(500);
+  pros::delay(300);
 
   chassis.pid_drive_set(-22_in, 50, true);
   chassis.pid_wait();
   intakeStop();
   clampIn();
+  pros::delay(200);
 
   chassis.pid_turn_set(0_deg, TURN_SPEED);
   chassis.pid_wait();
@@ -382,7 +387,7 @@ void skills() {
 
   chassis.pid_turn_set(-135_deg, TURN_SPEED);
   chassis.pid_wait();
-  pros::delay(500);
+  pros::delay(200);
 
   chassis.pid_drive_set(36_in, 50, true);
   chassis.pid_wait();
@@ -390,11 +395,19 @@ void skills() {
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 55);
+  // leftDoinkerOut();
+
+  chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 60);
   chassis.pid_wait();
   pros::delay(200);
 
-  chassis.pid_drive_set(20_in, 40, true);
+
+  chassis.pid_drive_set(15_in, 40, true);
+  chassis.pid_wait();
+
+  pros::delay(100);
+
+  chassis.pid_drive_set(-10_in, 40, true);
   chassis.pid_wait();
 
 
