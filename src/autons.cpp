@@ -344,19 +344,19 @@ void skills() {
   // lbMove(3000, 1000);
 
   // pros::delay(5000);
-
-  comboStart(127);
+  intakeStart(127);
   chassis.pid_drive_set(12_in, 60, true);
   pros::delay(500);
 
   chassis.pid_wait();
 
-  comboStop();
+  intakeStop();
 
   chassis.pid_drive_set(-11.25_in, 60, true);
   chassis.pid_wait();
   comboStart(127, 2500);
 
+  //First TUrn
   chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, SWING_SPEED, 15);
   chassis.pid_wait();
 
@@ -365,6 +365,7 @@ void skills() {
   intakeStart(127);
   chassis.pid_wait();
 
+  //Second Turn
   pros::delay(300);
   chassis.pid_turn_set(180_deg, TURN_SPEED);
   chassis.pid_wait();
@@ -396,20 +397,34 @@ void skills() {
   chassis.pid_wait();
 
   // leftDoinkerOut();
-
+  comboStop();
+  intakeStart(127);
+  pros::delay(1000);
+  
   chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 60);
   chassis.pid_wait();
   pros::delay(200);
-
+  intakeStop();
+  comboStart(127);
 
   chassis.pid_drive_set(15_in, 40, true);
   chassis.pid_wait();
 
-  pros::delay(100);
+  comboStop();
 
-  chassis.pid_drive_set(-10_in, 40, true);
+  chassis.pid_turn_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
 
+
+
+  // chassis.pid_drive_set(-20_in, 40, true);
+  // chassis.pid_wait();
+
+  // chassis.pid_swing_set(ez::RIGHT_SWING, 0_deg, SWING_SPEED, 60);
+  // chassis.pid_wait();
+
+  // chassis.pid_drive_set(-20_in, 60, true);
+  // chassis.pid_wait();
 
   // chassis.pid_drive_set( 36_in, 80, true);
   // chassis.pid_wait();
