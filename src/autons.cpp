@@ -1,3 +1,4 @@
+#include "autons.hpp"
 #include "helpers.hpp"
 #include "main.h"
 #include "subsystems.hpp"
@@ -31,15 +32,16 @@ void default_constants() {
 }
 
 void unJamFunction(){
-  pros::delay(2000);
+  pros::delay(4000);
   while(true){
       int velocity = conveyor.get_actual_velocity();
       if(pros::competition::is_autonomous() && isIntaking){
-          if(velocity < 5 && velocity > 0){
-              conveyor.move(-127);
+        
+          if(velocity < 20 && velocity >= 0){
+
+              groupStart(-127);
               pros::delay(300);
-              conveyor.move(127);
-          }
+              groupStart(127);          }
       }
       pros::delay(10);
   }
@@ -50,10 +52,12 @@ pros::Task unjam(unJamFunction);
 // Drive Example
 ///
 
-// void intakeTest(){
-//   groupStart(127, 10000);
+void intakeTest(){
+    clampIn();
+    pros::delay(1000);
+  groupStart(127, 10000);
 
-// }
+}
 
 void blueMatch() {
   ez::Piston flipper('G');
@@ -408,14 +412,19 @@ void skills() {
   chassis.pid_drive_set(24_in, 50, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
+
   pros::delay(200);
-
-  chassis.pid_drive_set(36_in, 50, true);
+  chassis.pid_drive_set(-24_in, 50, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_turn_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+    
+  chassis.pid_drive_set(24_in, 50, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
 
   // leftDoinkerOut();
@@ -429,13 +438,49 @@ void skills() {
   intakeStop();
   groupStart(127);
 
-  chassis.pid_drive_set(15_in, 40, true);
+  chassis.pid_drive_set(9_in, 40, true);
   chassis.pid_wait();
 
+  pros::delay(2000);
   groupStop();
+
+  chassis.pid_drive_set(-14_in, 40, true);
+  chassis.pid_wait();
 
   chassis.pid_turn_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
+
+  chassis.pid_drive_set(-72_in, 60, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(180_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  leftDoinkerOut();
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(45_deg, 20);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-1_in, 40, true);
+  chassis.pid_wait();
+
+  leftDoinkerIn();
+  groupStart(127);
+  chassis.pid_drive_set(8_in, 40, true);
+
+  pros::delay(2000);
+  groupStop();
+
+  chassis.pid_drive_set(-5_in, 40, true);
+  chassis.pid_turn_set(-45, 60);
+  chassis.pid_drive_set(-5_in, 40, true);
+  clampOut();
+  chassis.pid_drive_set(-5_in, 40, true);
+
+
+//   chassis.pid_turn_set(-45_deg, TURN_SPEED);
+//   chassis.pid_wait();
 
 
 

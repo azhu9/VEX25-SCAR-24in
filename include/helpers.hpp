@@ -14,37 +14,41 @@ inline bool isIntaking = false;
 inline void intakeStart(int voltage){
     intake.move(voltage);
     pros::delay(50);
-    isIntaking = true;
 }
 
 inline void intakeStart(int voltage, int ms){
     intake.move(voltage);
-    pros::delay(50);
-    isIntaking = true;
-    pros::delay(ms-50);
-    isIntaking = false;
+    pros::delay(ms);
     intake.brake();
 }
 
 inline void intakeStop(){
-    isIntaking = false;
     intake.brake();
 }
 
 //conveyor helper methods
 inline void conveyorStart(int voltage){
     conveyor.move(voltage);
+    pros::delay(50);
+    isIntaking = true;
+
+
 }
 
 
 inline void conveyorStart(int voltage, int ms){
     conveyor.move(voltage);
-    pros::delay(ms);
+    pros::delay(50);
+    isIntaking = true;
+    pros::delay(ms-50);
     conveyor.brake();
+    isIntaking = false;
 }
 
 inline void conveyorStop(){
     conveyor.brake();
+    isIntaking = false;
+
 }
 
 //both intake and conveyor methods
@@ -91,19 +95,19 @@ inline void flipperOut(){
 }
 
 inline void leftDoinkerIn(){
-    leftDoinker.set(true);
-}
-
-inline void leftDoinkerOut(){
     leftDoinker.set(false);
 }
 
+inline void leftDoinkerOut(){
+    leftDoinker.set(true);
+}
+
 inline void rightDoinkerIn(){
-    rightDoinker.set(true);
+    rightDoinker.set(false);
 }
 
 inline void rightDoinkerOut(){
-    rightDoinker.set(false);
+    rightDoinker.set(true);
 }
 
 

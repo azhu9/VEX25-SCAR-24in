@@ -20,5 +20,5 @@ inline int position = lb_rotation.get_position();
 
 inline ez::Piston clampPiston('A', false);
 inline ez::Piston flipperPiston('G', false);
-inline ez::Piston leftDoinker('H', false);
-inline ez::Piston rightDoinker('D', false);
+inline ez::Piston rightDoinker('H', false);
+inline ez::Piston leftDoinker('D', false);

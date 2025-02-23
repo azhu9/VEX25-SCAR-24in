@@ -52,7 +52,7 @@ void initialize() {
       // Auton("BLUE Positive goal rush \n Use Alignemnt tool", blueMatch),
       // Auton("RED Positive goal rush \n Use Alignemnt tool", redMatch),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", redMatchSafe),
-      // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", intakeTest),
+      Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", intakeTest),
       Auton("SKILLS \n Align against wallstake", skills),
       // Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
       // Auton("Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining),
@@ -115,9 +115,9 @@ void opcontrol() {
 
     clampPiston.button_toggle(master.get_digital(DIGITAL_B));
 
-    leftDoinker.set(master.get_digital(DIGITAL_Y) && !flipperPiston.get());
+    rightDoinker.set(master.get_digital(DIGITAL_Y) && !flipperPiston.get());
 
-    rightDoinker.set(master.get_digital(DIGITAL_RIGHT) && !flipperPiston.get());
+    leftDoinker.set(master.get_digital(DIGITAL_RIGHT) && !flipperPiston.get());
 
     flipperPiston.set(master.get_digital(DIGITAL_DOWN) && !rightDoinker.get() && !leftDoinker.get());
 
@@ -126,8 +126,10 @@ void opcontrol() {
 
     if(position == INT_MAX || position == INT_MIN) master.set_text(0, 0, "LB ERROR");
 
-    pros::lcd::print(1, "Rotation: %i", position);
-    master.set_text(0, 0, "r : " +std::to_string(position));
+    int vel = conveyor.get_actual_velocity();
+
+    pros::lcd::print(1, "Rotation: %i", vel);
+    master.set_text(0, 0, "v : " +std::to_string(vel));
 
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
       int currentTime = pros::millis();
