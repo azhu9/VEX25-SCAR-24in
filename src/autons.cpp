@@ -37,16 +37,36 @@ void unJamFunction(){
       int velocity = conveyor.get_actual_velocity();
       if(pros::competition::is_autonomous() && isIntaking){
         
-          if(velocity < 20 && velocity >= 0){
+          if(velocity < 10 && velocity >= 0){
 
               groupStart(-127);
               pros::delay(300);
-              groupStart(127);          }
+              groupStart(127);          
+            }
       }
       pros::delay(10);
   }
 }
 pros::Task unjam(unJamFunction);
+
+void lbMoveAuto(int target){
+  int target_position = target;
+  // int pressTime = pros::millis();
+
+  while (abs(position) < target_position) {
+  pros::lcd::print(1, "Rotation: %i", position);
+  
+    // int curTime = pros::millis();
+    position = lb_rotation.get_position();
+    ladyBrown.move(80); //55
+    pros::delay(20);
+
+    // if(curTime - pressTime > timeout) break;
+  }
+  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  ladyBrown.brake();
+  
+}
 
 ///
 // Drive Example
@@ -57,6 +77,25 @@ void intakeTest(){
     pros::delay(1000);
   groupStart(127, 10000);
 
+}
+
+void lbTest(){
+  // pros::delay(2000);
+
+  // // lbMoveAuto(1100);
+
+
+  // pros::delay(2000);
+
+  groupStart(127, 5000);
+
+
+  // lbMoveAuto(1100);
+
+
+
+
+  // lbMove(0, 1000);
 }
 
 void blueMatch() {

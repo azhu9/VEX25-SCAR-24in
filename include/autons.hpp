@@ -15,5 +15,6 @@ void motion_chaining();
 void combining_movements();
 void interfered_example();
 void intakeTest();
+void lbTest();
 
 void default_constants();
