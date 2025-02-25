@@ -1,8 +1,8 @@
 #include "autons.hpp"
+
 #include "helpers.hpp"
 #include "main.h"
 #include "subsystems.hpp"
-
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -31,71 +31,121 @@ void default_constants() {
   chassis.slew_drive_constants_set(7_in, 80);
 }
 
-void unJamFunction(){
+void unJamFunction() {
   pros::delay(4000);
-  while(true){
-      int velocity = conveyor.get_actual_velocity();
-      if(pros::competition::is_autonomous() && isIntaking){
-        
-          if(velocity < 10 && velocity >= 0){
-
-              groupStart(-127);
-              pros::delay(300);
-              groupStart(127);          
-            }
+  while (true) {
+    int velocity = conveyor.get_actual_velocity();
+    if (pros::competition::is_autonomous() && isIntaking) {
+      if (velocity < 10 && velocity >= 0) {
+        groupStart(-127);
+        pros::delay(300);
       }
-      pros::delay(10);
+      groupStart(127);
+    }
+    pros::delay(10);
   }
 }
+
 pros::Task unjam(unJamFunction);
 
-void lbMoveAuto(int target){
+// void lbMoveAuto(int target) {
+//   int target_position = target;
+//   // int pressTime = pros::millis();
+
+//   while (abs(position) < target_position) {
+//     pros::lcd::print(1, "Rotation: %i", position);
+
+//     // int curTime = pros::millis();
+//     position = lb_rotation.get_position();
+//     ladyBrown.move(80);  // 55
+//     pros::delay(20);
+
+//     // if(curTime - pressTime > timeout) break;
+//   }
+//   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+//   ladyBrown.brake();
+// }
+
+void lbMoveAuto(int target) {
   int target_position = target;
-  // int pressTime = pros::millis();
+  int pressTime = pros::millis();
+  // int position = lb_rotation.get_position();
+
+  // printf("Rotation: %i\n", position);
 
   while (abs(position) < target_position) {
-  pros::lcd::print(1, "Rotation: %i", position);
-  
+    pros::lcd::print(1, "Rotation: %i", position);
+    master.set_text(0, 0, "LB: " + std::to_string(position));
+
     // int curTime = pros::millis();
     position = lb_rotation.get_position();
-    ladyBrown.move(80); //55
-    pros::delay(20);
+    ladyBrown.move(40);  // 55
+    pros::delay(100);
 
-    // if(curTime - pressTime > timeout) break;
+    // if (curTime - pressTime > timeout) break;
   }
-  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  ladyBrown.brake();
-  
 }
-
 ///
 // Drive Example
 ///
 
-void intakeTest(){
-    clampIn();
-    pros::delay(1000);
-  groupStart(127, 10000);
+void intakeTest() {
+  // unjam.resume();
+  // clampIn();
+  // pros::delay(1000);
+  // groupStart(127, 2000);
+  // unjam.suspend();
 
+  unjam.suspend();
+
+  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+  ladyBrown.move(127);
+  pros::delay(100);
+  ladyBrown.brake();
+
+  groupStart(127);
+
+  chassis.pid_drive_set(9_in, 60, true);
+  chassis.pid_wait();
+
+  pros::delay(1500);
+
+  groupStop();
+
+  chassis.pid_drive_set(6_in, 60, true);
+  chassis.pid_wait();
+
+  pros::delay(1000);
+
+  ladyBrown.move(64);
+  pros::delay(500);
+  ladyBrown.brake();
+
+  pros::delay(1000);
+
+  chassis.pid_drive_set(-20_in, 60, true);
+  chassis.pid_wait();
+
+  // chassis.pid_drive_set(0_in, 0, true);
+  // chassis.pid_wait();
+
+  ladyBrown.move(-60);
+  pros::delay(1000);
+  ladyBrown.brake();
 }
 
-void lbTest(){
-  // pros::delay(2000);
+void lbTest() {
+  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  ladyBrown.move(127);
+  pros::delay(120);
+  ladyBrown.brake();
 
-  // // lbMoveAuto(1100);
+  pros::delay(2000);
 
-
-  // pros::delay(2000);
-
-  groupStart(127, 5000);
-
-
-  // lbMoveAuto(1100);
-
-
-
-
-  // lbMove(0, 1000);
+  ladyBrown.move(64);
+  pros::delay(500);
+  ladyBrown.brake();
 }
 
 void blueMatch() {
@@ -409,19 +459,22 @@ void skills() {
   // lbMove(3000, 1000);
 
   // pros::delay(5000);
+  // unjam.resume();
+  unjam.suspend();
+
   intakeStart(127);
   chassis.pid_drive_set(12_in, 60, true);
   pros::delay(500);
-
   chassis.pid_wait();
 
   intakeStop();
 
-  chassis.pid_drive_set(-11.25_in, 60, true);
+  chassis.pid_drive_set(-11_in, 60, true);
   chassis.pid_wait();
   groupStart(127, 2500);
+  // unjam.suspend();
 
-  //First TUrn
+  // First TUrn
   chassis.pid_swing_set(ez::LEFT_SWING, 90_deg, SWING_SPEED, 15);
   chassis.pid_wait();
 
@@ -430,7 +483,7 @@ void skills() {
   intakeStart(127);
   chassis.pid_wait();
 
-  //Second Turn
+  // Second Turn
   pros::delay(300);
   chassis.pid_turn_set(180_deg, TURN_SPEED);
   chassis.pid_wait();
@@ -451,7 +504,6 @@ void skills() {
   chassis.pid_drive_set(24_in, 50, true);
   chassis.pid_wait();
 
-
   pros::delay(200);
   chassis.pid_drive_set(-24_in, 50, true);
   chassis.pid_wait();
@@ -459,18 +511,19 @@ void skills() {
   chassis.pid_turn_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
-    
   chassis.pid_drive_set(24_in, 50, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
-
+  pros::delay(700);
   // leftDoinkerOut();
   groupStop();
+  // unjam.suspend();
+  // unjam.resume();
   intakeStart(127);
   pros::delay(1000);
-  
+
   chassis.pid_swing_set(ez::LEFT_SWING, 0_deg, SWING_SPEED, 60);
   chassis.pid_wait();
   pros::delay(200);
@@ -482,6 +535,7 @@ void skills() {
 
   pros::delay(2000);
   groupStop();
+  // unjam.suspend();
 
   chassis.pid_drive_set(-14_in, 40, true);
   chassis.pid_wait();
@@ -505,35 +559,116 @@ void skills() {
   chassis.pid_wait();
 
   leftDoinkerIn();
+  unjam.resume();
   groupStart(127);
   chassis.pid_drive_set(8_in, 40, true);
 
   pros::delay(2000);
   groupStop();
+  unjam.suspend();
 
   chassis.pid_drive_set(-5_in, 40, true);
+  chassis.pid_wait();
   chassis.pid_turn_set(-45, 60);
+  chassis.pid_wait();
   chassis.pid_drive_set(-5_in, 40, true);
+  chassis.pid_wait();
   clampOut();
   chassis.pid_drive_set(-5_in, 40, true);
+  chassis.pid_wait();
 
+  chassis.pid_drive_set(18_in, 40, true);
+  chassis.pid_wait();
 
-//   chassis.pid_turn_set(-45_deg, TURN_SPEED);
-//   chassis.pid_wait();
+  chassis.pid_turn_set(0, 60);
+  chassis.pid_wait();
 
+  chassis.pid_drive_set(46_in, 60, true);
+  chassis.pid_wait();
 
+  intakeStart(127);
 
-  // chassis.pid_drive_set(-20_in, 40, true);
+  chassis.pid_turn_set(90, 60);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(10_in, 60, true);
+  pros::delay(500);
+
+  intakeStop();
+
+  unjam.suspend();
+
+  ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+  ladyBrown.move(127);
+  pros::delay(100);
+  ladyBrown.brake();
+
+  groupStart(127);
+
+  chassis.pid_drive_set(6_in, 100, true);
+  chassis.pid_wait();
+
+  pros::delay(1500);
+
+  groupStop();
+
+  // chassis.pid_drive_set(4_in, 60, true);
   // chassis.pid_wait();
 
-  // chassis.pid_swing_set(ez::RIGHT_SWING, 0_deg, SWING_SPEED, 60);
+  pros::delay(1000);
+
+  ladyBrown.move(64);
+  pros::delay(500);
+  ladyBrown.brake();
+
+  pros::delay(1000);
+
+  chassis.pid_drive_set(-20_in, 60, true);
+  chassis.pid_wait();
+
+  // chassis.pid_drive_set(0_in, 0, true);
   // chassis.pid_wait();
 
-  // chassis.pid_drive_set(-20_in, 60, true);
+  ladyBrown.move(-60);
+  pros::delay(1000);
+  ladyBrown.brake();
+
   // chassis.pid_wait();
 
-  // chassis.pid_drive_set( 36_in, 80, true);
-  // chassis.pid_wait();
+  chassis.pid_drive_set(3_in, 40, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-38_in, 40, true);
+  chassis.pid_wait();
+
+  clampIn();
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  groupStart(127);
+  chassis.pid_drive_set(26_in, 40, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(0_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(24_in, 40, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-20_in, 40, true);
+  chassis.pid_wait();
+  clampOut();
+  chassis.pid_drive_set(10_in, 40, true);
+  chassis.pid_wait();
 }
 
 ///

@@ -1,8 +1,10 @@
 #include "main.h"
+
 #include <string>
+
+#include "helpers.hpp"
 #include "pros/motors.h"
 #include "subsystems.hpp"
-#include "helpers.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -15,7 +17,7 @@ ez::Drive chassis(
     {2, -3, 4, -5, -6},      // Left Chassis Ports (negative port will reverse it!)
     {11, -12, 13, -14, 15},  // Right Chassis Ports (negative port will reverse it!)
 
-    8,    // IMU Port
+    8,     // IMU Port
     2.75,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
     600);  // Wheel RPM
 
@@ -31,7 +33,7 @@ ez::Drive chassis(
 
 //     if(curTime - pressTime > timeout) break;
 //   }
-  
+
 // }
 
 void initialize() {
@@ -53,7 +55,7 @@ void initialize() {
       // Auton("RED Positive goal rush \n Use Alignemnt tool", redMatch),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", redMatchSafe),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", intakeTest),
-      Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", lbTest),
+      // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", lbTest),
 
       Auton("SKILLS \n Align against wallstake", skills),
       // Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
@@ -93,12 +95,9 @@ void opcontrol() {
   intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-
-
   lb_rotation.set_position(0);
   int lastPressTime = 0;
   const int doublePressThreshold = 175;
-
 
   while (true) {
     // chassis.opcontrol_tank();  // Tank control
@@ -123,28 +122,27 @@ void opcontrol() {
 
     flipperPiston.set(master.get_digital(DIGITAL_DOWN) && !rightDoinker.get() && !leftDoinker.get());
 
-
     position = lb_rotation.get_position();
 
-    if(position == INT_MAX || position == INT_MIN) master.set_text(0, 0, "LB ERROR");
+    if (position == INT_MAX || position == INT_MIN) master.set_text(0, 0, "LB ERROR");
 
     int vel = conveyor.get_actual_velocity();
 
     pros::lcd::print(1, "Rotation: %i", position);
-    master.set_text(0, 0, "v : " +std::to_string(vel));
+    master.set_text(0, 0, "v : " + std::to_string(vel));
 
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
       int currentTime = pros::millis();
 
       if (currentTime - lastPressTime <= doublePressThreshold) {
-        lbMove(3000, 1000); //function in helpers.hpp
-  
+        lbMove(3000, 1000);  // function in helpers.hpp
+
         ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         master.rumble(".");
       }
 
-      lastPressTime = currentTime; // Update last press time
-  }
+      lastPressTime = currentTime;  // Update last press time
+    }
 
     if (master.get_digital(DIGITAL_L1)) {
       ladyBrown.move(127);
@@ -155,9 +153,6 @@ void opcontrol() {
     } else {
       ladyBrown.brake();
     }
-
-
-
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
