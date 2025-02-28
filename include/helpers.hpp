@@ -1,5 +1,6 @@
 #pragma once
 #include "api.h"
+#include "autons.hpp"
 #include "subsystems.hpp"
 
 // Drive constants for Autons
@@ -118,5 +119,46 @@ inline void lbMove(int target, int timeout) {
     pros::delay(20);
 
     if (curTime - pressTime > timeout) break;
+  }
+}
+
+inline void unJamFunction() {
+  pros::delay(4000);
+  while (true) {
+    int velocity = conveyor.get_actual_velocity();
+    if (pros::competition::is_autonomous() && isIntaking) {
+      if (velocity < 10 && velocity >= 0) {
+        groupStart(-127);
+        pros::delay(300);
+      }
+      groupStart(127);
+    }
+    pros::delay(10);
+  }
+}
+
+inline void colorSortingFunction(){
+  pros::delay(4000);
+
+  while(true){
+    double hue = color.get_hue();
+    color.set_led_pwm(100);
+    if(pros::competition::is_autonomous()){
+      if (red_side) {
+        if (hue > 100 && hue < 360) {   
+          pros::delay(50);
+          conveyor.brake();
+          conveyor.move(-127);
+          pros::delay(200);
+        }
+      } else if (red_side == false) {
+        if (hue > 0 && hue < 20) {
+          pros::delay(80);
+          conveyor.brake();
+          conveyor.move(-127);
+          pros::delay(200);
+        }
+      }
+    }
   }
 }

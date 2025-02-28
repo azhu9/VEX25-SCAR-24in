@@ -16,7 +16,7 @@ inline pros::MotorGroup ladyBrown({19, -7});
 
 inline int position = lb_rotation.get_position();
 
-// inline pros::Optical color(10);
+inline pros::Optical color(20);
 
 inline ez::Piston clampPiston('A', false);
 inline ez::Piston flipperPiston('G', false);

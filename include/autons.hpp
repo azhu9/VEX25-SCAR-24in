@@ -4,7 +4,7 @@
 
 extern Drive chassis;
 
-inline bool red_side = false;
+inline bool red_side = true;
 
 void blueMatch();
 void redMatch();
@@ -16,5 +16,6 @@ void combining_movements();
 void interfered_example();
 void intakeTest();
 void lbTest();
+void colorTest();
 
 void default_constants();

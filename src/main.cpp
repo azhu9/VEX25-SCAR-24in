@@ -56,6 +56,8 @@ void initialize() {
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", redMatchSafe),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", intakeTest),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", lbTest),
+      // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", colorTest),
+
 
       Auton("SKILLS \n Align against wallstake", skills),
       // Auton("Swing Example\n\nSwing in an 'S' curve", swing_example),
@@ -98,6 +100,8 @@ void opcontrol() {
   lb_rotation.set_position(0);
   int lastPressTime = 0;
   const int doublePressThreshold = 175;
+  bool color_sorting = false;
+
 
   while (true) {
     // chassis.opcontrol_tank();  // Tank control
@@ -153,6 +157,37 @@ void opcontrol() {
     } else {
       ladyBrown.brake();
     }
+
+    double hue = color.get_hue();
+
+
+    if (master.get_digital_new_press(DIGITAL_X)) {
+      color_sorting = !color_sorting;
+      master.rumble(". .");
+    }
+
+    if (color_sorting) {
+        color.set_led_pwm(100);
+      if (red_side) {
+        if (hue > 100 && hue < 360) {   
+          pros::delay(50);
+          conveyor.brake();
+          conveyor.move(-127);
+          pros::delay(200);
+        }
+      } else if (red_side == false) {
+        if (hue > 0 && hue < 20) {
+          pros::delay(80);
+          conveyor.brake();
+          conveyor.move(-127);
+          pros::delay(200);
+        }
+      }
+    }
+    else{
+      color.set_led_pwm(0);
+    }
+
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

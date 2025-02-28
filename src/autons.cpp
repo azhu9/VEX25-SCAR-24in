@@ -31,40 +31,10 @@ void default_constants() {
   chassis.slew_drive_constants_set(7_in, 80);
 }
 
-void unJamFunction() {
-  pros::delay(4000);
-  while (true) {
-    int velocity = conveyor.get_actual_velocity();
-    if (pros::competition::is_autonomous() && isIntaking) {
-      if (velocity < 10 && velocity >= 0) {
-        groupStart(-127);
-        pros::delay(300);
-      }
-      groupStart(127);
-    }
-    pros::delay(10);
-  }
-}
 
-pros::Task unjam(unJamFunction);
+pros::Task unjam(unJamFunction); //unjam function in helpers
+pros::Task colorSorting(colorSortingFunction);
 
-// void lbMoveAuto(int target) {
-//   int target_position = target;
-//   // int pressTime = pros::millis();
-
-//   while (abs(position) < target_position) {
-//     pros::lcd::print(1, "Rotation: %i", position);
-
-//     // int curTime = pros::millis();
-//     position = lb_rotation.get_position();
-//     ladyBrown.move(80);  // 55
-//     pros::delay(20);
-
-//     // if(curTime - pressTime > timeout) break;
-//   }
-//   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-//   ladyBrown.brake();
-// }
 
 void lbMoveAuto(int target) {
   int target_position = target;
@@ -88,6 +58,12 @@ void lbMoveAuto(int target) {
 ///
 // Drive Example
 ///
+
+void colorTest(){
+  colorSorting.resume();
+  
+  groupStart(127, 10000);
+}
 
 void intakeTest() {
   // unjam.resume();
