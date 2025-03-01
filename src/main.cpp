@@ -51,7 +51,7 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      // Auton("BLUE Positive goal rush \n Use Alignemnt tool", blueMatch),
+      Auton("BLUE Positive goal rush \n Use Alignemnt tool", blueMatch),
       // Auton("RED Positive goal rush \n Use Alignemnt tool", redMatch),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", redMatchSafe),
       // Auton("RED SAFE Positive goal rush \n Use Alignemnt tool", intakeTest),
@@ -133,7 +133,6 @@ void opcontrol() {
     int vel = conveyor.get_actual_velocity();
 
     pros::lcd::print(1, "Rotation: %i", position);
-    master.set_text(0, 0, "v : " + std::to_string(vel));
 
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
       int currentTime = pros::millis();
@@ -165,6 +164,9 @@ void opcontrol() {
       color_sorting = !color_sorting;
       master.rumble(". .");
     }
+
+    master.set_text(0, 0, "Co: " + std::to_string(color_sorting) +" Cl: "+std::to_string(clampPiston.get()));
+
 
     if (color_sorting) {
         color.set_led_pwm(100);

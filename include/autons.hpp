@@ -4,7 +4,7 @@
 
 extern Drive chassis;
 
-inline bool red_side = true;
+inline bool red_side = false;
 
 void blueMatch();
 void redMatch();
