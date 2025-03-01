@@ -137,15 +137,15 @@ inline void unJamFunction() {
   }
 }
 
-inline void colorSortingFunction(){
+inline void colorSortingFunction() {
   pros::delay(4000);
 
-  while(true){
+  while (true) {
     double hue = color.get_hue();
     color.set_led_pwm(100);
-    if(pros::competition::is_autonomous()){
+    if (pros::competition::is_autonomous()) {
       if (red_side) {
-        if (hue > 100 && hue < 360) {   
+        if (hue > 100 && hue < 360) {
           pros::delay(50);
           conveyor.brake();
           conveyor.move(-127);
