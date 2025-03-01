@@ -493,6 +493,8 @@ void skills() {
   chassis.pid_drive_set(24_in, 50, true);
   chassis.pid_wait();
 
+  pros::delay(1500);
+
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
   pros::delay(1000);
@@ -512,7 +514,7 @@ void skills() {
   pros::delay(200);
   groupStart(127);
 
-  // unjam.resume();
+  unjam.resume();
   conveyor.move(127);
   chassis.pid_drive_set(12_in, 30, true);
   chassis.pid_wait();
@@ -586,7 +588,7 @@ void skills() {
   chassis.pid_turn_set(0, 60);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(46_in, 60, true);
+  chassis.pid_drive_set(49_in, 60, true);
   chassis.pid_wait();
   // chassis.drive_angle_set(90_deg);
   intakeStart(127);
@@ -602,8 +604,9 @@ void skills() {
 
   intakeStop();
 
+  // unjam.suspend();
   unjam.suspend();
-
+  // chassis.drive_angle_set(90_deg);
   ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   // ladybrown sequence
@@ -614,7 +617,7 @@ void skills() {
 
   groupStart(127);
 
-  chassis.pid_drive_set(2_in, 100, true);
+  chassis.pid_drive_set(10_in, 50, true);
   chassis.pid_wait();
 
   pros::delay(1000);
@@ -625,14 +628,17 @@ void skills() {
   // chassis.pid_wait();
 
   // pros::delay(1000);
-
-  ladyBrown.move(64);
-  chassis.pid_drive_set(5_in, 80, true);
+  chassis.pid_drive_set(4_in, 80, true);
   chassis.pid_wait();
+
+  ladyBrown.move(100);
+  chassis.pid_wait();
+  chassis.pid_drive_set(2_in, 80, true);
+
   pros::delay(600);
   ladyBrown.brake();
 
-  chassis.pid_drive_set(5_in, 60, true);
+  chassis.pid_drive_set(3_in, 60, true);
   chassis.pid_wait();
 
   pros::delay(1000);
@@ -653,7 +659,7 @@ void skills() {
 
   // chassis.pid_wait();
 
-  // ladybrown ended
+  //end
 
   chassis.pid_drive_set(3_in, 40, true);
   chassis.pid_wait();
@@ -737,20 +743,20 @@ void skills() {
 
   intakeStart(127);
 
-  chassis.pid_turn_set(-90_deg, 40);
+  chassis.pid_turn_set(-90_deg, 80);
   chassis.pid_wait();
 
   conveyor.move(15);
   pros::delay(600);
   conveyor.brake();
 
-  chassis.pid_drive_set(15_in, 40);
+  chassis.pid_drive_set(15_in, 80);
   chassis.pid_wait();
 
   intakeStop();
 
   leftDoinkerOut();
-  chassis.pid_turn_set(-80_deg, 40);
+  chassis.pid_turn_set(-80_deg, 80);
   chassis.pid_wait();
 
   pros::delay(500);
@@ -758,7 +764,7 @@ void skills() {
   // chassis.pid_turn_set(270_deg, 40);
   // chassis.pid_wait();
 
-  chassis.pid_turn_set(90_deg, 40);
+  chassis.pid_turn_set(90_deg, 80);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-33_in, 80);
@@ -775,7 +781,7 @@ void skills() {
   chassis.pid_drive_set(-6_in, 80);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(45_deg, 40);
+  chassis.pid_turn_set(45_deg, 80);
   chassis.pid_wait();
 
   groupStart(127);
