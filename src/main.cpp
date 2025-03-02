@@ -72,8 +72,8 @@ void initialize() {
   master.rumble(".");
   lb_rotation.reset();
 
-  // ez::Piston flipper('G');   //UNCOMMENT FOR DRIVER CODE
-  // flipper.set(true);
+  ez::Piston flipper('G');   //UNCOMMENT FOR DRIVER CODE
+  flipper.set(true);
 }
 
 void disabled() {}
@@ -101,6 +101,9 @@ void opcontrol() {
   int lastPressTime = 0;
   const int doublePressThreshold = 175;
   bool color_sorting = false;
+
+  ez::Piston clampPiston('A', false);
+
 
 
   while (true) {
@@ -138,7 +141,7 @@ void opcontrol() {
       int currentTime = pros::millis();
 
       if (currentTime - lastPressTime <= doublePressThreshold) {
-        lbMove(3000, 1000);  // function in helpers.hpp
+        lbMove(2850, 1000);  // function in helpers.hpp
 
         ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         master.rumble(".");
@@ -153,6 +156,10 @@ void opcontrol() {
       ladyBrown.move(-127);
       pros::delay(80);
       lb_rotation.set_position(0);
+    } else if (master.get_digital(DIGITAL_UP)) {
+      ladyBrown.move(20);
+    } else if (master.get_digital(DIGITAL_LEFT)) {
+      ladyBrown.move(-10);
     } else {
       ladyBrown.brake();
     }

@@ -199,61 +199,13 @@ void blueMatch() {
 
   leftDoinker.set(false);
 
-  chassis.pid_swing_relative_set(ez::LEFT_SWING, 85_deg, 70, 40);
+  // chassis.pid_swing_relative_set(ez::LEFT_SWING, 85_deg, 70, 40);
   chassis.pid_wait();
 
+  clampOut();
   // chassis.pid_turn_relative_set(90_deg, 40);
   // chassis.pid_wait();
 
-  clamp.set(false);
-
-  chassis.pid_swing_relative_set(ez::LEFT_SWING, 85_deg, 70, 10);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-125_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(20_in, 70, true);
-  chassis.pid_wait();
-
-  rightDoinker.set(true);
-
-  pros::delay(300);
-
-  chassis.pid_drive_set(-30_in, 70, true);
-  chassis.pid_wait();
-
-  rightDoinker.set(false);
-
-  pros::delay(1000);
-
-  chassis.pid_turn_relative_set(-165_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-15_in, 50, true);
-  chassis.pid_wait();
-
-  clamp.set(true);
-
-  intake.move(127);
-  conveyor.move(127);
-  chassis.pid_drive_set(10_in, 80, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-180_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  intake.brake();
-
-  conveyor.brake();
-
-  chassis.pid_drive_set(18_in, 50, true);
-  chassis.pid_wait();
-
-  ladyBrown.move(127);
-  pros::delay(1000);
-
-  ladyBrown.brake();
 }
 
 ///
@@ -303,10 +255,6 @@ void redMatch() {
 
   conveyor.move(127);
 
-  pros::delay(1000);
-
-  conveyor.brake();
-
   chassis.pid_turn_relative_set(-20_deg, TURN_SPEED);
   chassis.pid_wait();
 
@@ -340,61 +288,12 @@ void redMatch() {
 
   rightDoinker.set(false);
 
-  chassis.pid_swing_relative_set(ez::RIGHT_SWING, -85_deg, 70, 40);
+  // chassis.pid_swing_relative_set(ez::RIGHT_SWING, -85_deg, 70, 40);
   chassis.pid_wait();
+  clampOut();
 
   // chassis.pid_turn_relative_set(90_deg, 40);
   // chassis.pid_wait();
-
-  clamp.set(false);
-
-  chassis.pid_swing_relative_set(ez::RIGHT_SWING, -85_deg, 70, 10);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(140_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(20_in, 70, true);
-  chassis.pid_wait();
-
-  leftDoinker.set(true);
-
-  pros::delay(300);
-
-  chassis.pid_drive_set(-30_in, 70, true);
-  chassis.pid_wait();
-
-  leftDoinker.set(false);
-
-  // pros::delay(1000);
-
-  // chassis.pid_turn_relative_set(165_deg, TURN_SPEED);
-  // chassis.pid_wait();
-
-  // chassis.pid_drive_set(-15_in, 50, true);
-  // chassis.pid_wait();
-
-  // clamp.set(true);
-
-  // intake.move(127);
-  // conveyor.move(127);
-  // chassis.pid_drive_set(10_in, 80, true);
-  // chassis.pid_wait();
-
-  // chassis.pid_turn_relative_set(180_deg, TURN_SPEED);
-  // chassis.pid_wait();
-
-  // intake.brake();
-
-  // conveyor.brake();
-
-  // chassis.pid_drive_set(18_in, 50, true);
-  // chassis.pid_wait();
-
-  // ladyBrown.move(127);
-  // pros::delay(1000);
-
-  // ladyBrown.brake();
 }
 
 ///
